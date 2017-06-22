@@ -8,7 +8,8 @@ import matplotlib.pyplot as plt
 
 
 
-def main():    
+def main():   
+    # Below is a simple prediction with mad_mobile data 
     keyfile_path = './google_api_test_key_d958387b183b.json'
     scopes = ['https://www.googleapis.com/auth/prediction', 'https://www.googleapis.com/auth/devstorage.full_control', \
               'https://www.googleapis.com/auth/cloud-platform']
@@ -27,7 +28,7 @@ def main():
     data = createTrainingDataGPAPI()
     last_day_num = max(data.shape)
     
-    periods = 30 #in days
+    periods = 5 #in months
     
     values = [x for x in range(last_day_num+1,last_day_num+periods)]
     
@@ -52,6 +53,9 @@ def main():
 
 
 def createTrainingDataGPAPI():
+    # We load our training data csv files and create a file that suits Google Prediction API requirements
+    # Dates most be converted to integers because the API only takes strings and ints
+
     input_data_fn = "/Users/t-pelanz/Documents/MS/ltdashboard/pipeline/data/step1/mail_device_ts.csv" 
     input_targets_fn = "/Users/t-pelanz/Documents/MS/ltdashboard/pipeline/targets/mail_targets.csv" 
     targets_df = pd.read_csv(input_targets_fn, header=0, index_col=0, delimiter=",")
@@ -75,6 +79,9 @@ def createTrainingDataGPAPI():
     
 
 def prophetAnalysis():
+    # A simple test on Facebook prophet Prediction library. String similarity recognition is used to 
+    # avoid typos
+
     input_data_fn = "/Users/t-pelanz/Documents/MS/ltdashboard/pipeline/data/step1/mail_device_ts.csv" 
     input_targets_fn = "/Users/t-pelanz/Documents/MS/ltdashboard/pipeline/targets/mail_targets.csv" 
     targets_df = pd.read_csv(input_targets_fn, header=0, index_col=0, delimiter=",")
@@ -94,27 +101,12 @@ def prophetAnalysis():
             analyzeData(df,metric,2)
     
     
-    
-
-
-
 def analyzeData(df,metric_key,code=1):
     functions = {
            1 : prophetAnalysis1,
            2 : prophetAnalysis2,
-           } 
-    
-    
+           }  
     functions[code](df,metric_key)
-
-
-
-
-
-
-
-
-
 
 
 
@@ -130,6 +122,7 @@ def prophetAnalysis1(df,metric_key):
     forecast[['ds', 'yhat', 'yhat_lower', 'yhat_upper']]
     m.plot(forecast)
     #m.plot_components(forecast)
+    
     
 def prophetAnalysis2(df,metric_key):
     # Create a dataframe with just the x and y values
